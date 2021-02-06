@@ -16,15 +16,12 @@ public class UserServiceImp implements UserService{
 
 	@Override
 	public List<UserData> list() {
-		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet results = null;
 		List<UserData> list = new ArrayList<UserData>();
 		try {
-			DBUtil util = new DBUtil();
-			conn = util.getConnection();
 			String sql = "select * from emp_information";
-			stmt =conn.prepareStatement(sql);
+			stmt =DBUtil.conn.prepareStatement(sql);
 			results =stmt.executeQuery();
 			
 			while(results.next()) {
@@ -42,8 +39,6 @@ public class UserServiceImp implements UserService{
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-		}finally {
-			DBUtil.close(conn,stmt,results);
 		}
 		return list;
 	}

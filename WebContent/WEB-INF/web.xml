@@ -16,4 +16,12 @@
     <servlet-name>LoginServlet</servlet-name>
     <url-pattern>/Login</url-pattern>
   </servlet-mapping>
+    <servlet>
+    <servlet-name>SalaryHander</servlet-name>
+    <servlet-class>com.miku.Controller.SalaryHander</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SalaryHander</servlet-name>
+    <url-pattern>/Salary</url-pattern>
+  </servlet-mapping>
 </web-app>
