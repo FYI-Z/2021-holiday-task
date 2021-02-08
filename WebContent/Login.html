@@ -10,6 +10,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
     <link rel="stylesheet" href="layuimini-2/layuimini-2/lib/layui-v2.5.5/css/layui.css" media="all">
+	<script src="layuimini-2/layuimini-2/lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    
     <!--[if lt IE 9]>
     <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
     <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
@@ -117,6 +119,26 @@
             }
         });
     });
+    var setCookie = function (name, value) {
+  	  //当设置的时间等于0时，不设置expires属性，cookie在浏览器关闭后删除
+  	  var expires = 60 * 60 * 1000;	//设置时间的值是多少
+  	  var exp = new Date();
+  	  exp.setTime(exp.getTime() + expires);//设置定时
+  	  document.cookie = name + "=" + value + ";expires=" + exp.toUTCString();
+  	};
+  	//删除cookie
+  	var delCookie = function (name) {
+  	  setCookie(name, ' ', -1);
+  	};
+  	//传递cookie
+  	function init(id,power) {
+  	  setCookie('id',"X10017")
+  	  setCookie('power',"0123456789");
+  	}
+  	function deletecookie() {
+  	  delCookie('id',' ',-1)
+  	}
+
 </script>
 </body>
 </html>

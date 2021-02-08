@@ -12,11 +12,13 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
-    <link rel="icon" href="images/favicon.ico">
+    <link rel="icon" href="layuimini-2/layuimini-2/images/favicon.ico">
     <link rel="stylesheet" href="layuimini-2/layuimini-2/lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="layuimini-2/layuimini-2/css/layuimini.css?v=2.0.4.2" media="all">
     <link rel="stylesheet" href="layuimini-2/layuimini-2/css/themes/default.css" media="all">
     <link rel="stylesheet" href="layuimini-2/layuimini-2/lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
+    <script src="layuimini-2/layuimini-2/lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    
     <!--[if lt IE 9]>
     <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
     <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
@@ -35,6 +37,18 @@
                 <div class="layuimini-tool"><i title="展开" class="fa fa-outdent" data-side-fold="1"></i></div>
             </a>
 
+            <!--电脑端头部菜单-->
+            <ul class="layui-nav layui-layout-left layuimini-header-menu layuimini-menu-header-pc layuimini-pc-show">
+            </ul>
+
+            <!--手机端头部菜单-->
+            <ul class="layui-nav layui-layout-left layuimini-header-menu layuimini-mobile-show">
+                <li class="layui-nav-item">
+                    <a href="javascript:;"><i class="fa fa-list-ul"></i> 选择模块</a>
+                    <dl class="layui-nav-child layuimini-menu-header-mobile">
+                    </dl>
+                </li>
+            </ul>
 
             <ul class="layui-nav layui-layout-right">
 
@@ -48,7 +62,7 @@
                     <a href="javascript:;" data-check-screen="full"><i class="fa fa-arrows-alt"></i></a>
                 </li>
                 <li class="layui-nav-item layuimini-setting">
-                    <a href="javascript:;">admin</a>
+                    <a id="id" href="javascript:;"></a>
                     <dl class="layui-nav-child">
                         <dd>
                             <a href="javascript:;" layuimini-content-href="page/user-setting.html" data-title="基本资料" data-icon="fa fa-gears">基本资料<span class="layui-badge-dot"></span></a>
@@ -118,6 +132,22 @@
 <script src="layuimini-2/layuimini-2/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
 <script src="layuimini-2/layuimini-2/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
 <script>
+	$(document).ready(function () {
+		var id=getCookie('id');
+		console.log(id);
+		document.getElementById('id').innerHTML = id;	//.innnerHTML设置标签中的内容
+	});
+	
+	var getCookie = function (name) {
+	  	var arr;
+	  	var reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+	  	if (arr = document.cookie.match(reg)){
+	    	return arr[2];
+	  	}
+	  	else
+	    return null;
+};
+
     layui.use(['jquery', 'layer', 'miniAdmin','miniTongji'], function () {
         var $ = layui.jquery,
             layer = layui.layer,
@@ -149,7 +179,7 @@
 
         $('.login-out').on("click", function () {
             layer.msg('退出登录成功', function () {
-                window.location = 'page/login-3.html';
+                window.location = 'layuimini-2/layuimini-2/page/login-3.html';
             });
         });
     });

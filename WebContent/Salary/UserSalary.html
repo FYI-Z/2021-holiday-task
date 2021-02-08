@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>出勤情况</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../layuimini-2/layuimini-2/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../layuimini-2/layuimini-2/css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+    </div>
+</div>
+<script src="../layuimini-2/layuimini-2/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        table.render({
+            elem: '#currentTableId',
+            method:'post',
+            data:{
+            	"status":"TotalData"
+            },
+            url:'http://localhost:8080/SalarySystem/Attendance',
+            toolbar: '#toolbarAttend',
+            totalRow: true, //开启合计行
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+  			  {field: 'username', title: '用户名', width:135, sort: true,unresize:true,totalRowText: '合计：',align:'center'}
+  			  ,{field: 'basic', title: '基本工资', width:90,unresize:true,align:'center',totalRow:true}
+  			  ,{field: 'overtime', title: '加班工资', width:120, sort: true,unresize:true,edit:'text',align:'center',totalRow:true}
+  			  ,{field: 'commission', title: '提成工资', width:120,unresize:true,totalRow:true,align:'center'} 
+  			  ,{field: 'bonus', title: '福利奖金', width: 120,unresize:true,align:'center',totalRow:true}
+   	     	  ,{field: 'vacate', title: '请假扣除', width: 120, sort: true,unresize:true,align:'center',totalRow:true}
+   	     	  ,{field: 'late', title: '迟到扣除', width: 120, sort: true,unresize:true,align:'center',totalRow:true}
+   	      	  ,{field: 'absenteeism', title: '旷工扣除', width: 120,unresize:true,align:'center',totalRow:true}
+   	  		  ,{field: 'leave_days', title: '请假天数', width: 120, sort: true,align:'center',totalRow:true}
+   	  	   	  ,{field: 'late_days', title: '迟到天数', width: 120, sort: true,align:'center',totalRow:true}
+   	  		  ,{field: 'absenteeism_days', title: '旷工天数', width: 120, sort: true,align:'center',totalRow:true}
+   	 		  ,{field: 'overtime_hours', title: '加班时长', width: 120, sort: true,align:'center',totalRow:true}
+   	 		  ,{field: 'actual', title: '实发工资', width: 120, sort: true,align:'center',totalRow:true}
+    		 ]],
+    		parseData:function(res){
+		    	return{
+		    		"code":0,//解析接口状态
+		    		"msg":res.message,//解析提示文本
+		    		"count":res.total,//解析数据长度
+		    		"data":res//解析数据列表
+		    	};
+    		},   
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var result = JSON.stringify(data.field);
+            layer.alert(result, {
+                title: '最终的搜索信息'
+            });
+
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    searchParams: result
+                }
+            }, 'data');
+
+            return false;
+        });
+
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+        
+        
+        //success
+        function Confirm(username,method){
+        	$.ajax({
+        		type:"post",
+        		async:false,
+        		url:'http://localhost:8080/SalarySystem/Attendance',
+        		data:{
+        			
+        		},
+        		dataType:"json",
+        		success:function(data){
+        			
+        		},
+        		error:function(errorMsg){
+        			
+        		}
+        		
+        	});
+        }
+        //error
+
+    });
+</script>
+
+</body>
+</html>

@@ -35,11 +35,11 @@ public class LoginServlet extends HttpServlet {
 		
 		if(flag ==1) {
 			request.getSession().setAttribute("username", username);
-			request.getRequestDispatcher("index.html").forward(request, response);
+			request.getRequestDispatcher("/index.html").forward(request, response);
 		}
 		else {
 			
-			request.getRequestDispatcher("Login.html").forward(request, response);
+			//request.getRequestDispatcher("Login.html").forward(request, response);
 		}
 
 	}
