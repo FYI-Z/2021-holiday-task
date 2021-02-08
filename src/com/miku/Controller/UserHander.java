@@ -41,7 +41,7 @@ public class UserHander extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		String username = request.getParameter("username");
 		String status = request.getParameter("status");
-		System.out.println(status);
+		//System.out.println(status);
 
 		UserService service = new UserServiceImp();
 		

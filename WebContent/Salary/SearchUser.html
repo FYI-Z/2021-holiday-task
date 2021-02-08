@@ -25,14 +25,14 @@
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <button id="searchBtn" type="button" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                            <button id="searchBtn" type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
                         </div>
                     </div>
                 </form>
             </div>
         </fieldset>
 
-        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+        <table class="layui-hide" id="currentTableId1" lay-filter="currentTableFilter"></table>
 
     </div>
 </div>
@@ -42,11 +42,44 @@
         var $ = layui.jquery,
             form = layui.form,
             table = layui.table;
-		var status = "Total"
+        var search = "search";
+			user=window.location.href.split("?")[1]; //得到id=楼主
+			username = user.split("=")[1];
+        
+
+ 		$(function(){
+ 			getData();
+ 		});
+ 		
+ 		function getData(){
+ 			//var username = window.location.href.split("?")[1].split("=")[1];
+ 			
+ 			//username=user.split("=")[1];
+ 			//alert(username);
+ 			/* $.ajax({
+        		type:"post",
+        		async:false,
+        		url:'http://localhost:8080/SalarySystem/Attendance',
+        		data:{
+        			'username':username,
+        			'status':"search"
+        		},
+        		dataType:"json",
+        		success:function(data){
+        			window.alert("查询成功")
+        		},
+        		error:function(errorMsg){
+        			
+        		}
+        		
+        	}); */
+ 		}
+
         table.render({
-            elem: '#currentTableId',
+            elem: '#currentTableId1',
             method:'post',
-            url:'http://localhost:8080/SalarySystem/Attendance?status='+status,
+            
+            url:'http://localhost:8080/SalarySystem/Attendance?search='+search+"&username="+username,
             toolbar: '#toolbarAttend',
             totalRow: true, //开启合计行
             defaultToolbar: ['filter', 'exports', 'print', {
@@ -63,11 +96,7 @@
    	     	  ,{field: 'vacate', title: '请假扣除', width: 120, sort: true,unresize:true,align:'center',totalRow:true}
    	     	  ,{field: 'late', title: '迟到扣除', width: 120, sort: true,unresize:true,align:'center',totalRow:true}
    	      	  ,{field: 'absenteeism', title: '旷工扣除', width: 120,unresize:true,align:'center',totalRow:true}
-   	  		  ,{field: 'leave_days', title: '请假天数', width: 120, sort: true,align:'center',totalRow:true}
-   	  	   	  ,{field: 'late_days', title: '迟到天数', width: 120, sort: true,align:'center',totalRow:true}
-   	  		  ,{field: 'absenteeism_days', title: '旷工天数', width: 120, sort: true,align:'center',totalRow:true}
-   	 		  ,{field: 'overtime_hours', title: '加班时长', width: 120, sort: true,align:'center',totalRow:true}
-   	 		  ,{field: 'actual', title: '实发工资', width: 120, sort: true,align:'center',totalRow:true}
+   	  		 ,{field: 'actual', title: '实发工资', width: 120, sort: true,align:'center',totalRow:true}
     		 ]],
     		parseData:function(res){
 		    	return{
@@ -83,28 +112,11 @@
             skin: 'line'
         });
 
-      
- 		
- 		$(document).on('click','#searchBtn',function(data){
- 			var Username = $("#username").val();
- 			//alert(Username);
- 			jump(Username);
- 	    });
- 	
- 		function jump(username){
- 			//alert("chuandi le"+username);
- 			 url = 'SearchUser.html?username='+username;//用&拼接
- 			window.location.href = url;
- 		};
+       
 
-        //监听表格复选框选择
-        table.on('checkbox(currentTableFilter)', function (obj) {
-            console.log(obj)
-        });
         
         
-     
-
+        //success
     });
 </script>
 

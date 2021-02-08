@@ -42,18 +42,9 @@ public class SalaryHander extends HttpServlet {
 		String method = request.getParameter("method");
 		String status = request.getParameter("status");
 		String username = request.getParameter("username");
-		try {
-			PrintWriter out = response.getWriter();
-			SalaryServiceImp service = new SalaryServiceImp();
-			List<SalaryData> list = service.list();
-			String jsonArray = JSON.toJSONString(list);
-			out.print(jsonArray);
-			out.flush();
-			out.close();
-			System.out.println(jsonArray);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		//System.out.println(username);
+
+		
 		if("1".equalsIgnoreCase(method)||"2".equalsIgnoreCase(method)) {
 			confirmSuccess(request,response,method);
 		}
@@ -63,8 +54,34 @@ public class SalaryHander extends HttpServlet {
 		else if("del".equalsIgnoreCase(status)) {
 			DelOper(request,response,username);
 		}
+			ShowTotal(request,response);
+//			SearchOper(request,response,username);
+		
 	}
 	
+	/*
+	 * 
+	 */
+	
+	private void ShowTotal(HttpServletRequest request, HttpServletResponse response) {
+
+		try {
+			PrintWriter out = response.getWriter();
+			SalaryServiceImp Total = new SalaryServiceImp();
+			List<SalaryData> list = Total.list();
+			String jsonArray = JSON.toJSONString(list);
+			out.print(jsonArray);
+			out.flush();
+			out.close();
+			//System.out.println(jsonArray);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	
+
 	/*
 	 * 
 	 */
