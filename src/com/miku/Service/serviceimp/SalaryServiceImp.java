@@ -19,7 +19,6 @@ public class SalaryServiceImp implements SalaryService{
 		List<SalaryData>list  = new ArrayList<SalaryData>();
 		String sql = "select *from emp_salary";
 		
-		
 		try {
 			stmt = DBUtil.conn.prepareStatement(sql);
 			results = stmt.executeQuery();

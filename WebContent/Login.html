@@ -65,16 +65,16 @@
             <span class="bg1"></span>
             <span class="bg2"></span>
         </div>
-        <form class="layui-form login-bottom" action = "http://localhost:8080/SalarySystem/Login" method="post">
+        <form class="layui-form login-bottom" οnkeydοwn="if(event.keyCode==13) return false;" method="post">
             <div class="center">
                 <div class="item">
                     <span class="icon icon-2"></span>
-                    <input type="text" name="username" lay-verify="required"  placeholder="请输入登录账号" maxlength="24"/>
+                    <input type="text" id="username" name="username" lay-verify="required"  placeholder="请输入登录账号" maxlength="24"/>
                 </div>
 
                 <div class="item">
                     <span class="icon icon-3"></span>
-                    <input type="password" name="password" lay-verify="required"  placeholder="请输入密码" maxlength="20">
+                    <input type="password" id="password" name="password" lay-verify="required"  placeholder="请输入密码" maxlength="20">
                     <span class="bind-password icon icon-4"></span>
                 </div>
 
@@ -86,7 +86,8 @@
                 <a href="javascript:" class="forget-password">忘记密码？</a>
             </div>
             <div class="layui-form-item" style="text-align:center; width:100%;height:100%;margin:0px;">
-                <button class="login-btn" lay-submit="" lay-filter="login">立即登录</button>
+            	<!-- <input type="text" name="staffname" id="staffname" οnkeydοwn="if(event.keyCode==13) confirm();"/> -->
+                <button class="login-btn" id="loginBtn"  lay-filter="login" onClick="login()">立即登录</button>
             </div>
         </form>
     </div>
@@ -99,7 +100,7 @@
             layer = layui.layer;
 
         // 登录过期的时候，跳出ifram框架
-        if (top.location != self.location) top.location = self.location;
+       //S if (top.location != self.location) top.location = self.location;
 
         $('.bind-password').on('click', function () {
             if ($(this).hasClass('icon-5')) {
@@ -138,6 +139,60 @@
   	function deletecookie() {
   	  delCookie('id',' ',-1)
   	}
+  	
+  	var that = this;
+	var power;
+  	function login(){
+		var username = $("#username").val();
+		var password = $("#password").val();
+		$.ajax({
+			type : "post",
+		    async : true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+		    url : "http://localhost:8080/SalarySystem/Login",    //请求发送到UserServlet处
+		    data : {
+		    	"username":username,
+		    	"password":password
+		    },
+		    dataType : "json",        //返回数据形式为json
+		    success : function(result) {
+		    	console.log(result);
+		    	console.log(result.power);
+		    	that.power = result.power;
+		    	console.log(that.power);
+		    	$('#password').val(result.password);
+		    	if(result.result == 'UnError'){
+		    		alert("账号不存在!")
+		    	}else if(result.result == 'PswError'){
+		    		alert("密码错误!")
+		    	}else if(result.result == 'UnError'){
+		    		alert("账号不存在!")
+		    	}else if(result.result == 'NullError'){
+		    		alert("账号或密码不能为空!")
+		    	}else if(result.power==-1){
+		    		
+		    		url = "http://localhost:8080/SalarySystem/index.html";
+		    		alert("即将跳转权限为-1");
+		    		//alert(url);
+		    		window.location.href = "index.html";
+		    		
+		    	}else if(result.power==1){
+		    		alert("即将跳转权限为1");
+		    	}else if(result.power==0){
+		    		alert("跳转0");
+		    		//window.navigate("./index.html");
+		    		self.location = "./index.html";
+		    		alert("44");
+		    	}
+		    },
+		    error : function(errorMsg) {
+		        
+		    }
+		})
+		
+	}
+
+  	
+  	
 
 </script>
 </body>

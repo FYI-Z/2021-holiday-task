@@ -16,7 +16,7 @@
 </head>
 <body>
 <div class="layui-form layuimini-form">
-	
+	<h1>编辑用户考勤数据</h1>
     <div class="layui-form-item">
         <label class="layui-form-label required">用户名</label>
         <div class="layui-input-block">
@@ -68,7 +68,7 @@
         	var late_days = $('input[name=late_days]').val();
         	var absenteeism_days = $('input[name=absenteeism_days]').val();
         	var overtime_hours = $('input[name=overtime_hours]').val();
-			var status = "add";
+			var status = "edit";
         	
         	var data = {
 					"username":username,

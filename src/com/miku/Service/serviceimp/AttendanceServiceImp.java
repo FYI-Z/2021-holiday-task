@@ -11,7 +11,29 @@ public class AttendanceServiceImp implements SalaryService{
 
 	@Override
 	public List<SalaryData> list() {
-		return null;
+		PreparedStatement stmt = null;
+		ResultSet results = null;
+		List<SalaryData> list = new ArrayList<SalaryData>();
+		String sql = "select *from emp_attendance";
+		
+		try {
+			stmt = DBUtil.conn.prepareStatement(sql);
+			results = stmt.executeQuery();
+			
+			while(results.next()) {
+				SalaryData salaryData = new SalaryData();
+				salaryData.setUsername(results.getString("username"));
+				salaryData.setLeave_days(results.getFloat("leave_days"));
+				salaryData.setLate_days(results.getInt("late_days"));
+				salaryData.setAbsenteeism_days(results.getInt("absenteeism_days"));
+				salaryData.setOvertime_hours(results.getFloat("overtime_hours"));
+				list.add(salaryData);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+		
 	}
 	public List<SalaryData> ListAll(){
 		PreparedStatement stmt = null;

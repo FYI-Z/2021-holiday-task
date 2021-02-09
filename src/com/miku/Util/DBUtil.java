@@ -18,20 +18,9 @@ public class DBUtil {
 				e.printStackTrace();
 			}
 		}
-	public Connection getConnection() {
+	public  Connection getConnection() {
 		return this.conn;
 	}
 	
-	public static void close(Connection conn) {
-		if(conn!=null) {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				
-				e.printStackTrace();
-			}
-		}
-		
-		
-	}
+	
 }

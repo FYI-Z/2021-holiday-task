@@ -21,8 +21,7 @@
         </script>
 		
         <script type="text/html" id="currentTableBar">
-            <a class="layui-btn  layui-btn-sm data-count-edit" lay-event="edit">编辑</a>
-            <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete" lay-event="删除">删除</a>
+            <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete" lay-event="delete">删除</a>
         </script>		
     </div>
 </div>
@@ -32,11 +31,12 @@
         var $ = layui.jquery,
             form = layui.form,
             table = layui.table;
-
+		var status = "totalAttend";
+		
         table.render({
             elem: '#currentTableId',
             method:'post',
-            url:'http://localhost:8080/SalarySystem/Attendance',
+            url:'http://localhost:8080/SalarySystem/Attendance?status='+status,
             toolbar: '#toolbarAttend',
             totalRow: true, //开启合计行
             defaultToolbar: ['filter', 'exports', 'print', {
@@ -101,7 +101,7 @@
                     maxmin:true,
                     shadeClose: true,
                     area: ['100%', '100%'],
-                    content: 'AddSalary.html',
+                    content: 'AddAttendance.html',
                 });
                 $(window).on("resize", function () {
                     layer.full(index);
@@ -132,7 +132,7 @@
                     maxmin:true,
                     shadeClose: true,
                     area: ['100%', '100%'],
-                    content: 'AddSalary.html',
+                    content: 'EditAttendance.html',
                 });
                 $(window).on("resize", function () {
                     layer.full(index);
@@ -151,17 +151,15 @@
         function DelUser(username){
         	$.ajax({
         		type:"post",
-        		async:true,
-        		url:'http://localhost:8080/SalarySystem/AttendHander',
+        		async:false,
+        		url:'http://localhost:8080/SalarySystem/Attendance',
         		data:{
         			"username":username,
         			"status":"del"
         		},
         		dataType:"json",
         		success:function(data){
-					if(data.code==200){
 						layer.msg("删除成功！");
-					}
 					
         		},
         		error:function(errorMsg){

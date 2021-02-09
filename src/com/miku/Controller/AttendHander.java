@@ -45,14 +45,49 @@ public class AttendHander extends HttpServlet {
 		if("Total".equalsIgnoreCase(status)) {
 			showTotal(request,response);
 		}
-		 if("add".equalsIgnoreCase(status)) {
-			AddAttendance(request,response);
+		else if("add".equalsIgnoreCase(status)||"edit".equalsIgnoreCase(status)) {
+			addAttendance(request,response,status);
 		}
-		if("search".equalsIgnoreCase(search)) {
+		else if("totalAttend".equalsIgnoreCase(status)) {
+			showAttend(request,response);
+		}
+		else if("del".equalsIgnoreCase(status)) {
+			delAttendance(request,response,username);
+		}
+	    if("search".equalsIgnoreCase(search)) {
 			SearchOper(request,response,username);//这个就是搜索结果
 		}
 	}
 	
+	private void delAttendance(HttpServletRequest request, HttpServletResponse response,String username) {
+		
+		UpdateAttendanceDao del = new UpdateAttendanceDao();
+		int res = -1;
+		try {
+			res = del.Del(username);
+			System.out.println("删除成功");
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	private void showAttend(HttpServletRequest request, HttpServletResponse response) {
+		
+		try {
+			PrintWriter out = response.getWriter();
+			AttendanceServiceImp serviceTotal = new AttendanceServiceImp();
+			List<SalaryData> list = serviceTotal.list();
+			String jsonArray = JSON.toJSONString(list);
+			out.print(jsonArray);
+			out.flush();
+			out.close();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+
 	/*
 	 * 
 	 */
@@ -77,7 +112,7 @@ public class AttendHander extends HttpServlet {
 	 * 
 	 */
 
-	private void AddAttendance(HttpServletRequest request, HttpServletResponse response) {
+	private void addAttendance(HttpServletRequest request, HttpServletResponse response, String status) {
 		UpdateAttendanceDao upAttend = new UpdateAttendanceDao();
 		int res = -1;
 		String username = request.getParameter("username");
@@ -87,8 +122,8 @@ public class AttendHander extends HttpServlet {
 		String overtime_hours = request.getParameter("overtime_hours");
 		
 		try {
-			res = upAttend.Add(username,leave_days,late_days,absenteeism_days,overtime_hours);
-			System.out.println("添加成功");
+			res = upAttend.Add(username,leave_days,late_days,absenteeism_days,overtime_hours,status);
+			System.out.println("更新成功");
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

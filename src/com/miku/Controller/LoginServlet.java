@@ -1,13 +1,20 @@
 package com.miku.Controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.miku.imple.LoginDaoImple;
+import com.alibaba.fastjson.JSON;
+import com.miku.DB.LoginDao;
+import com.miku.Entity.LoginResult;
+import com.miku.Util.JsonTypeChange;
 
 
 public class LoginServlet extends HttpServlet {
@@ -19,29 +26,25 @@ public class LoginServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-		int flag = 0;
+		response.setContentType("application/json;charset=UTF-8");
+		PrintWriter out;
+		out = response.getWriter();
+		
+		int permission = -2;
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		
 		System.out.println(username);
 		System.out.println(password);
 		
-		LoginDaoImple login = new LoginDaoImple();
-		try {
-			flag = login.Login(username, password);
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-		if(flag ==1) {
-			request.getSession().setAttribute("username", username);
-			request.getRequestDispatcher("/index.html").forward(request, response);
-		}
-		else {
-			
-			//request.getRequestDispatcher("Login.html").forward(request, response);
-		}
-
+		LoginResult loginResult;
+		LoginDao loginDao = new LoginDao();
+		loginResult = loginDao.Login(username, password);
+	
+		String json = JSON.toJSONString(loginResult);
+		System.out.println(json);
+		out.write(json);
+		out.close();
 	}
 
 }
