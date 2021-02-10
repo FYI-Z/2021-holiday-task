@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>部门管理</title>
+  <link rel="stylesheet" href="../layuimini-2/layuimini-2/lib/layui-v2.5.5/css/layui.css"  media="all">
+ <!-- <link rel="stylesheet" href="../layuimini-2/layuimini-2/css/public.css" media="all"> -->
+	<script src="../layuimini-2/layuimini-2/lib/layui-v2.5.5/layui.js" type="text/javascript" charset="utf-8"></script>
+	<script src="jquery-3.5.1.js" charset="utf-8"></script>
+</head>
+<body>
+<table id="demo" lay-filter="test"></table>
+<div id="edit_department" style="margin: 8%; display:none;" >
+	<form class="layui-form layui-form-pane" method="post" id="edit">
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<input type="text" id="add_name" name="add_name" required lay-verify="required" placeholder="请输入部门名称" autocomplete="off" class="layui-input" style="width: 200px;">
+			</div>
+		</div>
+	</form>
+</div>
+<div id="combine_department" style="margin: 8%; display:none;">
+	<form class="layui-form layui-form-pane" method="post" id="combine">
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<input type="text" id="combine_name" name="combine_name" required lay-verify="required" placeholder="请输入合并后的部门名称" autocomplete="off" class="layui-input" style="width: 250px;">
+			</div>
+		</div>
+	</form>
+</div>
+	<script type="text/html" id="toolbarDemo">
+	  <div class="layui-btn-container">
+	    <button class="layui-btn layui-btn-sm" lay-event="add">创建</button>
+	    <button class="layui-btn layui-btn-sm" lay-event="combine">合并</button>
+	  </div>
+	</script>
+	<script type="text/html" id="barDemo">
+		<a class="layui-btn layui-btn-xs" lay-event="edit">更名</a>
+		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	</script>
+  <script type="text/javascript">
+	  layui.use('table',function(){
+				 var table = layui.table;
+				 table.render({
+				 	elem : '#demo',
+				 	url : 'http://localhost:8080/Chou_Pi_Jiang/DepartmentHandler',
+					method:'post',
+					toolbar: '#toolbarDemo',
+				 	cols : [[
+						//设置序列号
+						{field: 'aa',type:"numbers"},
+						//设置复选框
+						{field: 'aa',type:"checkbox"},
+				 		{field: 'name',title:'部门名称',sort:'true'},
+						{field: 'operator',title:'操作者'},
+						//设置表头工具栏
+						{field:'right',title:'操作',toolbar:"#barDemo"}
+				 	]],
+					page: true,
+					where:{
+						method:"getAll",
+					},
+					parseData:function(res){
+						console.log(res);
+						if(this.page.curr){
+							result = res.item.slice(this.limit*(this.page.curr-1),this.limit*this.page.curr);
+						}
+						else{
+							result = res.item.slice(0,this.limit);
+						} 
+						return {
+							"code" : res.code,//解析接口状态
+							"msg" : res.msg,//解析提示文本
+							"data" : result,//解析数据列表
+							"count": res.item.length
+						};
+					}
+				 });
+				 /**
+				 *监听行工具栏事件
+				 */
+				 table.on('tool(test)',function(obj){
+					 //得到当前操作行的相关信息
+					var data = obj.data;
+					console.log(data);
+					//得到事件名
+					var eventName = obj.event;
+					//判断事件名，执行对应的方法
+					if(eventName == 'del'){		//删除
+						//确认框
+						layer.confirm('你确认要删除吗？',{title:'删除'},function(index){
+							$.getJSON('http://localhost:8080/Chou_Pi_Jiang/DepartmentHandler',{
+								name:data.name,
+								method:"del"
+							},function(res){
+								layer.msg(res.data);
+								table.reload('demo',{})		//demo为table的id
+								}
+							);
+							layer.close(index);
+						});
+					}else if(eventName == 'edit'){		//更名
+						//输入框
+						layer.open({
+							type:1,
+							title:["部门更名",'font-size:14px;'],
+							area:['450px','200px'],
+							btn:['确定','取消'],
+							content:$('#edit_department'),
+							btnAlign: 'c',
+							success:function(layero,index){
+								layero.find("#add_name").val(data.name);
+							},
+							end:function(index, layero){
+								layer.close(index);
+								$("#edit")[0].reset();
+								return false;
+							},
+							yes:function(index,layero){		//确定
+								if(data.name != layero.find("#add_name").val() ){
+									$.getJSON('http://localhost:8080/Chou_Pi_Jiang/DepartmentHandler',{
+									name:data.name, //原部门名称
+									changed_name:layero.find("#add_name").val(),  //更名后的部门名称
+									method:"edit",
+									operator:"11958301",
+								},function(res){
+									layer.msg(res.data); 
+								})
+								layer.close(index);
+								$("#edit")[0].reset();
+								table.reload('demo', {})
+							}
+							else{
+								layer.msg("部门名称未修改",{
+									time:2000
+								});
+							}
+						},
+					});
+					}
+				 });
+				 /**
+				  * 头监听事件
+				  */
+				 table.on('toolbar(test)',function(obj){
+					 var checkStatus = table.checkStatus(obj.config.id);
+					 //获取事件名
+					 var eventName = obj.event;
+					 switch(eventName){
+						  case 'add':
+						       layer.open({
+								   type:1,
+								   title:["创建部门",'font-size:14px;'],
+								   area:['450px','200px'],
+								   btn:['确定','取消'],
+								   content:$('#edit_department'),
+								   btnAlign: 'c',
+								   yes:function(index,layero){
+									 if(layero.find("#add_name").val()!=""){
+									 		$.getJSON('http://localhost:8080/Chou_Pi_Jiang/DepartmentHandler',{
+									 			name:layero.find("#add_name").val(), 
+									 			method:"add",    
+									 			operator:"11958301",
+									 		},function(res){
+									 			layer.msg(res.data); 
+									 			layer.close(index);
+									 		})
+									 		table.reload('demo', {})
+									 	}
+									 	else{
+									 		layer.msg("部门名称不能为空"); 
+									 	}
+									 },
+									 end:function(index, layero){              
+									 	layer.close(index);
+									 	$("#edit")[0].reset();
+									 	return false;
+									 },  
+							   })
+						     break;
+						  case 'combine':
+						       var data = checkStatus.data;
+						       if(data.length<2){
+						       	layer.msg("部门合并操作需要两个或两个以上部门");
+						       }else{
+						       	layer.open({
+						       		type:1,
+						       		title:["部门合并",'font-size:14px;'],
+						       		area:['520px', '200px'],
+						       		btn: ['确定', '取消'],
+						       		content:$('#combine_department'),
+						       		btnAlign: 'c',
+						       		yes:function(index, layero){  //点击确定按钮
+						       			if(layero.find("#combine_name").val()!=""){
+						       				$.getJSON('http://localhost:8080/Chou_Pi_Jiang/DepartmentHandler',{
+						       					name:layero.find("#combine_name").val(),
+						       					data:JSON.stringify(data),
+						       					method:"combine", 
+						       					operator:"11958301"
+						       				},function(res){
+						       					layer.msg(res.data); 
+						       					table.reload('demo', {});
+						       				})
+						       				layer.close(index);
+						       			}else{
+						       				layer.msg("部门名称不能为空"); 
+						       			}
+						       		},
+						       		end:function(index, layero){
+						       			$("#combine")[0].reset();
+						       			return false;
+						       		}
+						       	})
+						       }
+						     break;
+					 };
+				 });
+			})
+	</script>
+</body>
+</html>
