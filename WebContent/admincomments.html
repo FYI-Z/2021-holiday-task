@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>评论管理</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="layui/css/layui.css"  media="all">
+  <script src="layui/layui.js" type="text/javascript" charset="utf-8"></script>
+  <script src="jquery-3.5.1.js" charset="utf-8"></script>
+</head>
+<body> 
+ 
+<div class="demoTable">
+  搜索：
+  <div class="layui-inline">
+    <input class="layui-input" name="id" id="demoReload" autocomplete="off">
+  </div>
+  <div class="layui-inline">
+    	<select name="interest" id="interest" lay-filter="aihao" style="height:40px;">
+        	<option value="commentsid">评论ID搜索</option>
+        	<option value="goodsid">商品ID搜索</option>
+        	<option value="userid">用户ID搜索</option>
+        	<option value="comments">评论内容搜索</option>
+        </select>
+  </div>
+  <button class="layui-btn" data-type="reload">搜索</button>
+</div>
+ 
+<table class="layui-hide" id="tablefirst" lay-filter="first"></table> 
+
+
+
+
+
+<div id="add_comments" style="text-align: center; display:none;">
+	<form class="layui-form" id="add" method="post">
+		<div class="layui-form-item" style="margin-top: 20px;">
+			<label class="layui-form-label">商品ID</label>
+			    <div class="layui-input-inline">
+			      <input type="text" id="goodsid" name="goodsid" lay-verify="required" placeholder="请输入商品ID" autocomplete="off" class="layui-input">
+				</div>
+		</div>
+		<div class="layui-form-item" style="margin-top: 20px;">
+			<label class="layui-form-label">用户ID</label>
+			    <div class="layui-input-inline">
+			      <input type="text" id="userid" name="userid" lay-verify="required" placeholder="请输入用户ID" autocomplete="off" class="layui-input">
+				</div>
+		</div>
+		 <div class="layui-form-item layui-form-text" style="margin-top: 20px;">
+		    <label class="layui-form-label">评论</label>
+		    <div class="layui-input-inline">
+		      <textarea name="addcomments" id="addcomments" lay-verify="required"  placeholder="请输入评论内容" class="layui-textarea"></textarea>
+		    </div>
+		  </div>
+	</form>
+</div>
+
+               
+
+	<script type="text/html" id="toolbarDemo">
+	  <div class="layui-btn-container">
+	    <button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+		<button class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">删除</button>
+	  </div>
+	</script>
+
+          
+
+<script>
+layui.use('table', function(){
+  var table = layui.table;
+  
+  //方法级渲染
+  table.render({
+    elem: '#tablefirst'
+    ,url: 'comments'
+	,method: 'post'
+	,toolbar: '#toolbarDemo'
+    ,cols: [[
+		//设置序列号
+		{field: 'aa',type:"numbers"}
+		//设置复选框
+		,{field: 'bb',type:"checkbox"}
+		,{field:'commentsid', title: '评论ID', width:100, sort: true}
+      ,{field:'goodsid', title: '商品ID', width:100, sort: true}
+      ,{field:'userid', title: '用户ID', width:100, sort: true}
+	  ,{field:'time', title: '评论时间', sort: true, width:120, edit: 'text'}
+      ,{field:'comments', title: '评论', edit: 'text'}
+    ]]
+    ,id: 'testReload'
+    ,page: true
+    ,where:{
+		method:"getAll",
+	},
+	parseData:function(res){
+		console.log(res);
+		if(this.page.curr){
+			result = res.item.slice(this.limit*(this.page.curr-1),this.limit*this.page.curr);
+		}
+		else{
+			result = res.item.slice(0,this.limit);
+		} 
+		return {
+			"code" : res.code,//解析接口状态
+			"msg" : res.msg,//解析提示文本
+			"data" : result,//解析数据列表
+			"count": res.item.length
+			};
+	}
+  });
+  
+  //监听单元格编辑
+    table.on('edit(first)', function(obj){
+      console.log(obj);
+	  var value = obj.value //得到修改后的值
+	  
+      ,data = obj.data //得到所在行所有键值
+      ,field = obj.field; //得到字段
+	  $.ajax({
+	  		  url: 'comments',
+	  		  type: 'post',
+	  		 // async : false,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+	  		  data:{
+				commentsid: data.commentsid,
+				goodsid: data.goodsid,
+				userid: data.userid,
+				time: data.time,
+				comments: value,
+				method:'edit'
+			  },
+	  		  dataType:'json',
+	  		  success: function(res){
+	  			  console.log(res);
+				  layer.msg(res.data);
+	  		  },
+			  error : function(res) {
+			      layer.msg(res.data);
+			  }
+	  })
+
+    });
+  
+  
+  /**
+   * 头监听事件
+   */
+  table.on('toolbar(first)',function(obj){
+	  console.log(obj);
+  					 var checkStatus = table.checkStatus(obj.config.id);
+  					 //获取事件名
+  					 var eventName = obj.event;
+  					 switch(eventName){
+  						  case 'add':
+  						       layer.open({
+  								   type:1,
+								   title: false,
+  								   skin: 'layui-layer-rim', //加上边框
+  								   area:['350px','300px'],
+								   btn:['确定','取消'],
+  								   content:$('#add_comments'),
+  								   btnAlign: 'c',
+  								   yes:function(index,layero){
+									   console.log(layero);
+  									 if(layero.find("#goodsid").val()!=""
+										&& layero.find("#userid").val()!=""
+										&&layero.find("#addcomments").val()!=""){
+  									 		$.getJSON('comments',{	//传参数
+												goodsid: layero.find("#goodsid").val(),
+  									 			userid:layero.find("#userid").val(), 
+												comments:layero.find("#addcomments").val(), 
+  									 			method:"add",
+  									 		},function(res){
+  									 			layer.msg(res.data); 
+  									 			layer.close(index);
+  									 		})
+  									 		table.reload('testReload', {});	//tablefirst为table.render里的那个id
+																			//table.render中未设id就是<table id="">的值
+  									 	}
+  									 	else{
+  									 		layer.msg("表单不完整,请继续完善！"); 
+  									 	}
+  									 },
+  									 end:function(index, layero){              
+  									 	layer.close(index);
+  									 	$("#add")[0].reset();
+  									 	return false;
+  									 },  
+  							   })
+  						     break;
+  						  case 'del':
+								//console.log(checkStatus);
+  						       var data = checkStatus.data;
+							   var commentsidArray = [];
+							   //console.log(data);
+							   
+  						       if(data.length < 1){
+  						       	layer.msg("请勾选需要删除的评论！");
+  						       }else{
+								   for(var i in data){
+									   commentsidArray.push(data[i].commentsid);
+								   }
+								   //console.log(commentsidArray);
+								  
+								   //console.info(commentsidArray.toString());
+								   layer.confirm('你确定要删除吗？', {title:'提示信息'}, function(index){
+									  $.getJSON('comments',{
+									  	"array": commentsidArray,
+									  	method:"del"
+									  },function(res){
+									  	layer.msg(res.data);
+									  	table.reload('testReload',{})		
+									  	}
+									  );
+									  layer.close(index);
+								   })
+  						       }
+  						     break;
+  					 };
+  });
+  
+  
+  
+  
+  var $ = layui.$, active = {
+		    reload: function(){
+		      var demoReload = $('#demoReload');
+		      
+		      console.log(demoReload.val());
+		      console.log($('#interest').val());
+		      //执行重载
+		      table.reload('testReload', {
+		        page: {
+		          curr: 1 //重新从第 1 页开始
+		        }
+		        ,where: {
+		        	 keyword : demoReload.val(),
+		        	 searchtype : $('#interest').val(),
+		        	 method:"searchKey"
+		        }
+		      }, 'data');
+		    }
+		  }; 
+		  
+		   $('.demoTable .layui-btn').on('click', function(){
+			var type = $(this).data('type');
+		    [type] ? active[type].call(this) : '';
+		  }); 
+});
+</script>
+
+</body>
+</html>
