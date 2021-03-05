@@ -26,7 +26,6 @@ public class OrderHandler extends HttpServlet {
 			response.setContentType(Constant.ContentType);
 			OrderController orderController = new OrderController();
 			String method = request.getParameter("method");
-			System.out.println(method);
 			if(method.equals("getAll")) {
 				orderController.PrintOrder(request, response);
 			}else if(method.equals("add")) {

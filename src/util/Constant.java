@@ -3,7 +3,9 @@ package util;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import service.serviceImp.CommentsServiceImp;
 
@@ -22,12 +24,7 @@ public class Constant {
 	public static String DBURL = "jdbc:mysql://192.168.40.130:3306/db_webshop?characterEncoding=UTF-8&useSSL=false";
 	public static String ContentType = "text/json;charset=utf-8";
 	
-	/* description: 将字符串转成json数据格式并传到前端
-	 * author: 李章
-	 * time: 2021.02.28
-	 * 参数: json,response
-	 * 返回类型: void
-	 * */
+
 	public static void JsonToFrontend(String json, HttpServletResponse response) {
 		try {
 			CommentsServiceImp commentsServiceImp = new CommentsServiceImp();
@@ -39,5 +36,20 @@ public class Constant {
 		}
 	}
 	
+	public static final String liftCycle = "900";
+	public static long ExpireTime = Integer.parseInt(liftCycle)*1000;
+	public static PrintWriter out;
+	public static HttpSession session;
+	static public void Base(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			request.setCharacterEncoding("UTF-8");
+			//response.setContentType("text/html;charset=UTF-8");
+			response.setContentType("application/json;charset=UTF-8");
+			out = response.getWriter();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
 	
 }
