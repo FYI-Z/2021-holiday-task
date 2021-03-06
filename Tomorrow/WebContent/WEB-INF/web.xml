@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+  <servlet>
+    <servlet-name>CommentsHandler</servlet-name>
+    <servlet-class>controller.CommentsHandler</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CommentsHandler</servlet-name>
+    <url-pattern>/comments</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>OrderHandler</servlet-name>
+    <servlet-class>controller.OrderHandler</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>OrderHandler</servlet-name>
+    <url-pattern>/orders</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>AddressController</servlet-name>
+    <servlet-class>controller.AddressController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddressController</servlet-name>
+    <url-pattern>/addresscontroller</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>GoodsController</servlet-name>
+    <servlet-class>controller.GoodsController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GoodsController</servlet-name>
+    <url-pattern>/goodscontroller</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>UserController</servlet-name>
+    <servlet-class>controller.UserController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserController</servlet-name>
+    <url-pattern>/usercontroller</url-pattern>
+  </servlet-mapping>
+  
+  
+  
+  <servlet>
+    <servlet-name>PayLogController</servlet-name>
+    <servlet-class>controller.PayLogController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PayLogController</servlet-name>
+    <url-pattern>/pay</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>PayController</servlet-name>
+    <servlet-class>controller.PayController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PayController</servlet-name>
+    <url-pattern>/alipay</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>CartController</servlet-name>
+    <servlet-class>controller.CartController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CartController</servlet-name>
+    <url-pattern>/cart</url-pattern>
+  </servlet-mapping>
+  
+  
+</web-app>

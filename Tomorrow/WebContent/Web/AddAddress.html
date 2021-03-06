@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>增加地址信息（后台）</title>
+</head>
+	<link rel="stylesheet" href="res/layuimini/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="res/layuimini/css/public.css" media="all" type="text/css">
+    <link rel="stylesheet" href="res/layui/css/layui.css" type="text/css">
+    <script type="text/javascript" src="res/layui/layui.js" charset="utf-8"></script>
+<body>
+	<form action="">
+	
+	<div class="layui-form-item">
+    <label class="layui-form-label">用户id</label>
+    <div class="layui-input-block">
+      <input type="text" name="userid" id="userid" lay-verify="required" lay-reqtext="" placeholder="用户id" autocomplete="off" class="layui-input">
+    </div>
+  	</div>
+	
+	<div class="layui-form-item">
+    <label class="layui-form-label">收件人姓名</label>
+    <div class="layui-input-block">
+      <input type="text" name="name" id="name" lay-verify="required" lay-reqtext="" placeholder="姓名" autocomplete="off" class="layui-input">
+    </div>
+  	</div>
+	
+	<div class="layui-form-item">
+    <label class="layui-form-label">电话</label>
+    <div class="layui-input-block">
+      <input type="text" name="phone" id="phone" lay-verify="required" lay-reqtext="" placeholder="电话" autocomplete="off" class="layui-input">
+    </div>
+  	</div>
+	
+	<div class="layui-form-item">
+    <label class="layui-form-label">收件人地址</label>
+    <div class="layui-input-block">
+      <input type="text" name="address" id="address" lay-verify="required" autocomplete="off" placeholder="地址" class="layui-input">
+    </div>
+  	</div>
+	
+	
+	
+	<div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+	</form>
+	
+	<script src="res/layuimini/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+	<script>
+ layui.config({
+      base: 'res/static/js/util' //你存放新模块的目录，注意，不是layui的模块目录
+    }).use(['jquery','form'],function(){
+    	 var $ = layui.$,form = layui.form;
+    	 form.render();
+    	 form.on('submit(formDemo)', function(data){
+    		  var name =  $("#name").val();
+    		  var userid =  $("#userid").val();
+    		  var phone =  $("#phone").val(); 
+    		  var address = $("#address").val();
+    		  
+    		 $.ajax({
+     			type : "post",
+     		    async : true,           
+     		    url : "http://localhost:8080/Tomorrow/addresscontroller", 
+     		    data : {
+     		    	"name":name,
+     		    	"userid":userid,
+     		    	"phone":phone,
+     		    	"address":address,
+     		    	"flag":"plusaddress"
+     		    },
+     		    dataType : "json",        //返回数据形式为json
+     		    success : function(result) {
+     		    	layer.msg("成功");
+     		    	
+     		    },
+     		    fail : function(result) {
+     		    	console.log("失败");
+     		    	layer.close(index);
+     		    }
+     		})
+    	    return false;
+    	  });
+    });
+
+layui.use('form', function(){
+  var form = layui.form;
+  form.render();
+  
+});
+</script>
+</body>
+</html>

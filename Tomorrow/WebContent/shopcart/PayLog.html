@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>所有订单</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../layuimini-2/layuimini-2/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../layuimini-2/layuimini-2/css/public.css" media="all">
+</head>
+<body id="test">
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-sm " lay-event="add"> 添加 </button>
+                <button class="layui-btn layui-btn-sm  " lay-event="pay"> 支付 </button>
+				<button class="layui-btn layui-btn-sm " lay-event="del"> 删除订单 </button>
+				<button class="layui-btn layui-btn-sm " lay-event="close"> 关闭订单 </button>
+            	<button class="layui-btn layui-btn-sm " lay-event="detail"> 查看详细 </button>
+			</div>
+
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+        </script>
+
+    </div>
+</div>
+<script src="../layuimini-2/layuimini-2/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../layuimini-2/layuimini-2/lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+<script>
+		var Obj = null;
+		var count = 0;
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+		var pageStatus = "list";
+		var userid  = "null";
+        table.render({
+            elem: '#currentTableId',
+            url: 'http://localhost:8080/Tomorrow/pay?pageStatus='+pageStatus+'&userid='+userid,
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                {type: "checkbox", width: 50},
+                {field: 'userId', width: 150, title: '用户账号', sort: true, align: "center"},
+                {field: 'sn', width: 120, title: '支付编号', align: "center"},
+                {field: 'pay_sn', width: 180, title: '支付平台交易号', sort: true, align: "center"},
+                {field: 'totalAmount', width: 80, title: '总金额', align: "center"},
+                {field: 'title', width: 120,title: '订单标题', align: "center"},
+                {field: 'info', width: 120, title: '订单详情', sort: true, align: "center"},
+                {field: 'status', width: 120, title: '订单状态', sort: true, align: "center",templet:function(status){
+	  			  if(status.status ==0){
+	  				  return '<span style="color:red" id="status">待支付</span>';
+	  			  }
+	  			  else if(status.status==1){
+	  				  return '<span style="color:green">已支付</span>';
+	  			  }
+	  			  else if(status.status ==2){
+	  				  return '<span style="color:gray">已退款</span>';
+	  			  }
+	  			  else if(status.status ==3){
+	  				  return '<span style="color:#DDE7F0">已关闭</span>';
+	  			  }
+                }},
+                {field: 'refundAmount', width: 120, title: '退款金额', align: "center",templet:function(status){
+	  			  if(status.refundAmount =='null'){
+	  				  return '<span style="color:#c2c2c2"></span>';
+	  			  }else{
+	  				return '<span style="color:#c2c2c2"></span>';
+	  			  }
+	  			  
+                }},
+                {field: 'createTime', width: 180, title: '创建时间', sort: true, align: "center"},
+                {field: 'payTime', width: 180, title: '支付时间', sort: true, align: "center"},
+                {title: '操作', width: 125,toolbar: '#currentTableBar', align: "center"}
+            ]],
+            parseData:function(res){
+    				//console.log(res);
+    				
+		    	return{
+		    		"code":0,//解析接口状态
+		    		"msg":res.message,//解析提示文本
+		    		"count":res.total,//解析数据长度
+		    		"data":res,//解析数据列表
+		    	};
+    		},
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var result = JSON.stringify(data.field);
+            layer.alert(result, {
+                title: '最终的搜索信息'
+            });
+
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    searchParams: result
+                }
+            }, 'data');
+
+            return false;
+        });
+
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                var index = layer.open({
+                    title: '添加信息',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: 'AddBill.html',
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            } else if (obj.event === 'pay') {  // 监听支付操作
+            	//pay(Obj,count);
+            	if(count<=0||Obj ==null){
+            		alert("请选择一条数据进行支付");
+            		return;
+            	}
+            	var status = Obj.data.status;
+            	var sn = Obj.data.sn;
+            	var pageStatus = "toPay"
+            	if(status!=0){
+            		alert("该状态不可再发起支付");
+            		return;
+            	}
+            	 var index = layer.open({
+                     type: 2,
+                     shade: 0.2,
+                     maxmin:true,
+                     shadeClose: true,
+                     area: ['100%', '100%'],
+                     content: "http://localhost:8080/Tomorrow/alipay?pageStatus="+pageStatus+"&sn="+sn,
+            	 });
+                 $(window).on("resize", function () {
+                     layer.full(index);
+                 });
+            	
+            } else if (obj.event === 'del') {  // 监听删除订单操作
+            	//pay(Obj,count);
+            	if(count<=0||Obj ==null){
+            		alert("请选择一条数据进行删除");
+            		return;
+            	}
+            	
+					layer.confirm('真的删除该订单信息吗', function (index) {
+            		
+						var status = Obj.data.status;
+		            	var sn = Obj.data.sn;
+                	if(status !=0){
+                		alert("该状态不可删除");
+                		layer.close(index);
+                		return;
+                	}
+            	
+            	layer.confirm('真的删除该订单吗', function (index) {
+            		layer.close(index);
+                    DelUser(sn);
+                	});
+            	
+            	})
+            }else if (obj.event === 'detail') {  // 监听添加操作
+            	if(count<=0||Obj ==null){
+            		alert("请选择一条数据进行查看详情");
+            		return;
+            	}
+            	var sn = Obj.data.sn;
+                view(sn);
+            }else if(obj.event ==='close'){
+            	if(count<=0||Obj ==null){
+            		alert("请选择一条数据进行关闭");
+            		return;
+            	}
+            	
+        	
+	        	layer.confirm('真的关闭该订单吗', function (index) {
+	        		var status = Obj.data.status;
+	            	var sn = Obj.data.sn;
+	        	if(status !=0){
+	        		alert("该状态不可关闭");
+	        		layer.close(index);
+	        		return;
+	        	}
+	        		layer.close(index);
+	                closePay(sn);
+	            	});
+	            }
+            
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+           tran(obj,count);
+           
+        });
+
+        function tran(obj){
+        	Obj = obj;
+        	count++;
+        	//console.log(Obj);
+        }
+        //行监听
+        table.on('tool(currentTableFilter)', function (obj) {
+            if (obj.event === 'edit') {
+
+                var index = layer.open({
+                    title: '添加',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '../page/table/edit.html',
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'delete') {  // 行监听删除操作
+            	layer.confirm('真的删除该行吗', function (index) {
+            		
+            		var status = obj.data.status;
+                	var sn = obj.data.sn;
+                	var pageStatus = "toPay"
+                	if(status === 1){
+                		alert("该状态不可删除");
+                		layer.close(index);
+                		return;
+                	}
+            		
+            		obj.del();
+                    layer.close(index);
+                    DelUser(obj.data.sn);
+                });
+            }
+        });
+      //del
+        function DelUser(sn){
+    	  var pageStatus = "del";
+        	$.ajax({
+        		type:"post",
+        		async:true,
+        		url:'http://localhost:8080/Tomorrow/pay?pageStatus='+pageStatus+"&sn="+sn,
+        		dataType:"text",
+        		success:function(result){
+        			window.location.reload();
+        		},
+        		error:function(errorMsg){
+        			alert("无法删除,请联系管理员");
+        		}
+        		
+        	});
+        }
+        //view
+        function view(sn){
+        	if(count<=0||Obj ==null){
+        		alert("请选择一条数据进行查看");
+        		return;
+        	}
+        	window.location.href='view.html?sn='+sn;
+        }
+        //close
+        function closePay(sn){
+        	var pageStatus = "close";
+        	$.ajax({
+        		type:"post",
+        		async:true,
+        		url:'http://localhost:8080/Tomorrow/pay?pageStatus='+pageStatus+"&sn="+sn,
+        		dataType:"text",
+        		success:function(result){
+        			alert(result);
+        			alert("关闭成功");
+        			window.location.reload();
+        		},
+        		error:function(errorMsg){
+        			alert("无法删除,请联系管理员");
+        		}
+        		
+        	});
+        }
+    });
+    
+  
+    
+</script>
+
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>设置个人地址</title>
+</head>
+	<link rel="stylesheet" href="res/layuimini/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="res/layuimini/css/public.css" media="all">
+    <link rel="stylesheet" href="res/layui/css/layui.css" type="text/css">
+    <script type="text/javascript" src="res/layui/layui.js" charset="utf-8"></script>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend style="font-size: 18px">管理你的收货地址</legend>
+            <div style="margin: 10px 10px 10px 10px">
+               
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加 </button>
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+        </script>
+
+    </div>
+</div>
+<script src="res/layuimini/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+
+	var getCookie = function (name) {
+	  var arr;
+	  var reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+	  if (arr = document.cookie.match(reg)){
+	    return arr[2];
+	  }
+	  else
+	    return null;
+	};
+
+	var setCookie = function (name, value) {
+		  
+		  var expires = 15 * 60 * 1000;
+		  var exp = new Date();
+		  exp.setTime(exp.getTime() + expires);
+		  document.cookie = name + "=" + value + ";expires=" + exp.toUTCString();
+		};
+
+		
+		
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+        var userid = getCookie("userid");
+        //console.log(userid);
+        table.render({
+            elem: '#currentTableId',
+            url: 'http://localhost:8080/Tomorrow/addresscontroller?flag='+"findaddress"+"&userid="+userid,
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                {type: "checkbox", width: 50},
+               	{field:"addressid",title:"地址编号",sort:true,width:100,hide:true},
+  			  	{field:"userid",title:"用户编号",width:150,sort:true},
+  			  	{field:"name",title:"收件人姓名",width:120,edit:"text"},
+  			  	{field:"phone",title:"收件人电话",width:160,align:"center",edit:"text"},
+  			  	{field:"address",title:"收件人地址",width:350,align:"center",edit:"text"},  			 
+                {title: '操作', maxWidth: 180, toolbar: '#currentTableBar', align: "center"}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line',
+           	id: 'testReload'
+        });
+        
+     
+		
+       	$(document).on('click','#seach-btn',function(data){
+       		var seach = $("#userid");
+       		var index = layer.open({
+                title: '查询',
+                type: 2,
+                shade: 0.2,
+                maxmin:true,
+                shadeClose: true,
+                area: ['90%', '40%'],
+                content: 'AddressResult.html?userid='+seach.val(),
+            });
+            $(window).on("resize", function () {
+                layer.full(index);
+            });
+            return false;
+     
+       	})
+       	
+        
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                var index = layer.open({
+                    title: '添加地址',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['60%', '80%'],
+                    content: 'AddAddress2.html',
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            } else if (obj.event === 'delete') {  // 监听删除操作
+                var checkStatus = table.checkStatus('currentTableId')
+                    , data = checkStatus.data;
+                layer.alert(JSON.stringify(data));
+            }
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'edit') {
+
+                var index = layer.open({
+                    title: '编辑用户',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: 'ModifyUser.html',
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'delete') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    console.log(obj.data.addressid);
+                    deleteInfo(obj.data.addressid);
+                    layer.close(index);
+                });
+            }
+            else if(obj.event ==='ban') {
+            	layer.confirm('真的要禁用吗', function (index) {
+                   
+                    console.log(obj.data.username);
+                    $.ajax({
+            			type : "post",
+            		    async : false,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+            		    url : "http://localhost:8080",    //请求发送到UserServlet处
+            		    data : {
+            		    	"userid":obj.data.username,
+            		    	"password":obj.data.password,
+            		    	"name":obj.data.name,
+            		    	"sex":obj.data.sex,
+            		    	"department":obj.data.department,
+            		    	"permission":-1,
+            		    	"position":obj.data.position,
+            		    	"phone":obj.data.phone,
+            		    	"age":obj.data.age,
+            		    	"flag":"更正信息"
+            		    },
+            		    dataType : "json",        //返回数据形式为json
+            		    success : function(result) {
+            		    	console.log("禁用成功");
+            		    	layer.msg("已禁用："+obj.data.username);
+            		    },
+            		    error : function(errorMsg) {
+            		        console.log("失败");
+            		        layer.msg("禁用失败");
+            		    }
+            		})	
+		
+                    layer.close(index);
+                });
+            }
+        });
+	
+        function FindInfo(username) {
+        	alert("函数为"+username);
+        	$.ajax({
+				type : "post",
+			    async : false,            
+			    url : "http://localhost:8080",    
+			    data : {
+			    	"userid":username
+			    },
+			    dataType : "json",       
+			    success : function(result) {
+			    	alert(result);
+			 
+			    },
+			    error : function(errorMsg) {
+			        console.log(errorMsg);
+			    }
+			})
+		}
+        
+        function deleteInfo(addressid){
+			console.log('删除')
+			$.ajax({
+				type : "post",
+			    async : false,            
+			    url : "http://localhost:8080/Tomorrow/addresscontroller",   
+			    data : {
+			    	"addressid":addressid,
+			    	"flag":"deleteaddress"
+			    	
+			    },
+			    dataType : "json",        
+			    success : function(result) {
+			    	console.log(result);
+			    	console.log("删除成功");
+			    },
+			    error : function(errorMsg) {
+			        console.log(errorMsg);
+			        console.log("删除失败");
+			    }
+			})
+		}
+        //function BanUser(username)
+        
+        table.on('edit(currentTableFilter)',function(obj){
+  		  console.log(obj);
+  		  var userid = obj.data.userid;
+  		  var addressid =obj.data.addressid;
+  		  var name =obj.data.name;
+  		  var phone =obj.data.phone;
+  		  var address =obj.data.address;
+  		  var value=obj.value;
+  		  var data =  obj.data;
+  		  var field = obj.field;  
+  		$.ajax({
+			type : "post",
+		    async : false,            
+		    url : "http://localhost:8080/Tomorrow/addresscontroller",   
+		    data : {
+		    	"userid":userid,
+		    	"addressid":addressid,
+		    	"name":name,
+		    	"phone":phone,
+		    	"address":address,
+		    	"flag":"updataaddress"
+		   
+		    },
+		    dataType : "json",        //返回数据形式为json
+		    success : function(result) {
+		    	console.log("成功");
+		    	layer.msg("修改成功！");
+		    },
+		    error : function(errorMsg) {
+		        console.log("失败");
+		        layer.msg("修改失败！");
+		    }
+		})
+  	  });
+        
+    });
+</script>
+
+</body>
+</html>

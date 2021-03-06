@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>个人中心页</title>
+</head>
+	<link rel="stylesheet" type="text/css" href="res/static/css/main.css">
+  	<link rel="stylesheet" type="text/css" href="res/layui/css/layui.css">
+  	<script type="text/javascript" src="res/layui/layui.js"></script>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+  <div class="layui-header">
+    <div class="layui-logo"><span id="usernick">用户</span>的个人中心</div>
+    <!-- 头部区域（可配合layui已有的水平导航） -->
+    <ul class="layui-nav layui-layout-left">
+      
+     
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+      <li class="layui-nav-item">
+        <a href="javascript:;">
+          <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+         <span id="usernick2">用户</span>
+        </a>
+      </li>
+      <li class="layui-nav-item"><a href="index.html">返回首页</a></li>
+      <li class="layui-nav-item"><a href="" onclick="quit()">退出登录</a></li>
+    </ul>
+  </div>
+  
+  <div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+      <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+      <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+        <li class="layui-nav-item layui-nav-itemed">
+         
+          <dl class="layui-nav-child">
+            <dd><a href="javascript:;" onclick="touser()">修改基本信息</a></dd>
+            <dd><a href="javascript:;" onclick="toaddress()">地址管理</a></dd>
+           
+          </dl>
+        </li>
+   
+      </ul>
+    </div>
+  </div>
+  
+  <div class="layui-body">
+    <!-- 内容主体区域 -->
+    
+    
+    <Iframe src="Userchange.html" width="100%" height="100%" frameborder="0" id="iframe"></iframe>
+    
+    
+  </div>
+  
+  <div class="layui-footer">
+    <!-- 底部固定区域 -->
+    © layui.com - 底部固定区域
+  </div>
+</div>
+<script src="res/layuimini/lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+<script>
+
+
+	var quit = function () {
+		
+		delCookie("token");
+		delCookie("userid");
+		window.location = "Index2.html";
+		return false;
+	}
+
+
+window.onload=function(){
+	var token = getCookie("token");
+	$.ajax({
+		type : "post",
+	    async : true,           
+	    url : "http://localhost:8080/Tomorrow/usercontroller", 
+	    data : {
+	    	"token":token,
+	    	"flag":"checkToken"
+	    },
+	    dataType : "json",       
+	    success : function(result) {
+	    	console.log(result);
+	    	if(result.data.status=="已获取用户信息"){
+	    		console.log("已获取用户信息");
+	    		setCookie("userid",result.data.username);
+	    		setCookie("nickname",result.data.nickname);
+	    		setCookie("password",result.data.password);
+	    		setCookie("sex",result.data.sex);
+	    		setCookie("phone",result.data.phone);
+	    		setCookie("age",result.data.age);
+	    		setCookie("email",result.data.email);
+	    		document.getElementById("usernick").innerHTML=result.data.nickname;
+	    		document.getElementById("usernick2").innerHTML=result.data.nickname;
+	    	}
+	    	else {
+				if(result.data.status=="token过期"){
+					console.log("token过期");
+					window.location = "tokenerror.html";
+					
+				}
+				else if (result.data.status=="不存在的token") {
+					console.log("不存在的token");
+					window.location = "tokenerror.html";
+				}
+				else {
+					window.location = "tokenerror.html";
+				}
+			}
+	    	
+	    },
+	    error : function(errorMsg) {
+	    	
+	    }
+	})
+	
+	return false;
+};
+
+	function delCookie(name)//删除cookie
+	{
+    	var exp = new Date();
+    	exp.setTime(exp.getTime() - 1);
+    	var cval=getCookie(name);
+   	 if(cval!=null) document.cookie= name + "="+cval+";expires="+exp.toGMTString();
+	}
+
+	var getCookie = function (name) {
+	  var arr;
+	  var reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+	  if (arr = document.cookie.match(reg)){
+	    return arr[2];
+	  }
+	  else
+	    return null;
+	};
+
+	var setCookie = function (name, value) {
+		  
+		  var expires = 15 * 60 * 1000;
+		  var exp = new Date();
+		  exp.setTime(exp.getTime() + expires);
+		  document.cookie = name + "=" + value + ";expires=" + exp.toUTCString();
+		};
+
+
+function touser() {
+  	
+	document.getElementById("iframe").src="Userchange.html";
+}
+
+function toaddress() {
+	document.getElementById("iframe").src="addresset.html";
+}
+
+layui.use('element', function(){
+  var element = layui.element;
+  
+  
+  
+  
+  
+  
+});
+</script>
+</body>
+</html>

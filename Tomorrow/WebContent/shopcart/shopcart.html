@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>购物车</title>
+  <link rel="stylesheet" type="text/css" href="res/static/css/main.css">
+  <link rel="stylesheet" type="text/css" href="res/layui/css/layui.css">
+  <script type="text/javascript" src="res/layui/layui.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+</head>
+<body>
+
+
+  <div class="site-nav-bg">
+    <div class="site-nav w1200">
+      <p class="sn-back-home">
+        <i class="layui-icon layui-icon-home"></i>
+        <a href="#">首页</a>
+      </p>
+      <div class="sn-quick-menu">
+        <div class="login"><a href="login.html">登录</a></div>
+        <div class="sp-cart"><a href="shopcart.html">购物车</a><span>2</span></div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="header">
+    <div class="headerLayout w1200">
+      <div class="headerCon">
+        <h1 class="mallLogo">
+          <a href="#" title="母婴商城">
+            <img src="res/static/img/logo.png">
+          </a>
+        </h1>
+        <div class="mallSearch">
+          <form action="" class="layui-form" novalidate>
+            <input type="text" name="title" required  lay-verify="required" autocomplete="off" class="layui-input" placeholder="请输入需要的商品">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">
+                <i class="layui-icon layui-icon-search"></i>
+            </button>
+            <input type="hidden" name="" value="">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="content content-nav-base shopcart-content">
+    <div class="main-nav">
+      <div class="inner-cont0">
+        <div class="inner-cont1 w1200">
+          <div class="inner-cont2">
+            <a href="commodity.html" class="active">所有商品</a>
+            <a href="buytoday.html">今日团购</a>
+            <a href="information.html">母婴资讯</a>
+            <a href="about.html">关于我们</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="banner-bg w1200">
+      <h3>夏季清仓</h3>
+      <p>宝宝被子、宝宝衣服3折起</p>
+    </div>
+    
+	<div class="layui-card-body ">
+	 <table class="layui-table layui-form" >
+	   <thead>
+	   <tr>
+	     <th width="100">商品</th>
+	     <th width="100">名称</th>
+	     <th width="100">单价</th>
+	     <th width="100">数量</th>
+	     <th width="100">小计</th>
+	     <th width="100">操作</th>
+	   </thead>
+	   <tbody class="x-cate" id="test">
+	
+	   </tbody>
+	 </table>
+	</div>
+      
+    <div class="FloatBarHolder layui-clear">
+        <div class="th th-chk">
+          <div class="select-all">
+            <div class="cart-checkbox">
+              <!-- <input class="check-all check" id="" name="select-all" type="checkbox"  value="true"> -->
+            </div>
+            <!-- <label>&nbsp;&nbsp;已选<span class="Selected-pieces">0</span>件</label> -->
+          </div>
+        </div>
+        <div class="th batch-deletion">
+         <!--  <span class="batch-dele-btn">批量删除</span> -->
+        </div>
+        <div class="th Settlement">
+          <button class="layui-btn" onclick="toPay()">结算</button>
+        </div>
+        <div class="th total">
+          <p>应付：<span class="pieces-total" id="totalAmount"></span></p>
+        </div>
+      </div>
+  </div>
+  
+
+
+  <script src="../layuimini-2/layuimini-2/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../layuimini-2/layuimini-2/lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+	
+	//自动获取地址栏链接带？以及后面的字符串
+	 var topUrl =window.location.search;  
+     var  url =decodeURI(topUrl);
+     //alert(url);
+	//定义一个空对象
+	var obj = {};
+	//如果字符串里面存在?
+	if(url.indexOf("?") != -1){
+		//从url的索引1开始提取字符串
+		var str = url.substring(1);
+		//如果存在&符号，则再以&符号进行分割
+		var arr = str.split("&");
+		//遍历数组
+		for(var i=0; i<arr.length; i++){
+			//obj对象的属性名 = 属性值，unescape为解码字符串
+			obj[arr[i].split("=")[0]] = unescape(arr[i].split("=")[1]);
+		}
+	}
+	  var userid = obj.userid;
+	  var number = obj.number;
+	  if(obj.goodsid==null){
+	  	var goodsid = -1;
+		  
+	  }else{
+		  var goodsid = obj.goodsid;
+	  }
+	  var price = obj.price;
+	  var title = obj.title;
+	  var totalAmount=0;
+	  
+	  var data={
+			  "userid":userid,
+			  "number":number,
+			  "goodsid":goodsid,
+			  "price":price,
+			  "title":title
+	  }
+	  console.log(data);
+	  
+		
+	  $(document).ready(function() {
+	  	var status = "add";
+	    $.ajax({
+	        url : 'http://localhost:8080/Tomorrow/cart?status='+status,//后台请求的数据
+	        dataType: 'json', //数据格式
+	        type : "post",//请求方式
+	        async : false,//是否异步请求
+	        data:data,
+	        success : function(data) { 
+	        	console.log(data);
+	        	var tt = data;  
+	        	var str1 = "";
+	        	
+	        	for (var i = 0; i < tt.length; i++) {   //遍历
+	        		var price = (tt[i].subtotal.toFixed(2)/tt[i].number).toFixed(2);
+	        		totalAmount+=tt[i].subtotal;
+                    str1 += "<tr cate-id='0' fid='0'>" +
+                    	'<td ><img id="img" src="'+tt[i].picture+'"></td>' +
+                    	"<td>" + tt[i].name+ "</td>" +
+                        "<td>" + price+ "</td>" +    //i代表下标，获取数据中的下标为i的1的值
+                        "<td>" + tt[i].number+ "</td>" + 
+                        "<td>" + (tt[i].subtotal).toFixed(2)+ "元</td>" +    //i代表下标，获取数据中的下标为i的2的值
+                        "<td>"+'<button class="layui-btn layui-btn-danger">删除</button>'+"</td>" ;
+                        //'<td id="img">' + tt[i].price+ "</td>" ;    //i代表下标，获取数据中的下标为i的3的值
+                }
+                test.innerHTML = str1;   //将数据写入html中
+                $("#totalAmount").html(totalAmount+"元");
+            },
+	           /*  $("#img").attr("src",""+data[0].picture+"");
+	            $("#name").html(data[0].name);
+	            $("#price").html(data[0].price+"元");
+	            $("#number").html(data[0].number);
+	            $("#Subtotal").html((data[0].price*number).toFixed(2)+"元"); */
+	        error : function (arg1) {
+	            alert("加载数据失败");
+	            console.log(arg1);
+	        }
+	    })
+	});
+	  function toPay(sn){
+      	var data = {
+    			"userId":userid,
+				"title":"你所选中的多样商品",
+				"totalAmount":totalAmount,
+				"info":"商品详细"
+
+    	};
+      	var pageStatus = "add";
+      	$.ajax({
+      		type:"post",
+      		async:true,
+      		url:'http://localhost:8080/Tomorrow/pay?pageStatus='+pageStatus,
+      		dataType:"text",
+      		data:data,
+      		success:function(data){
+      			var data = eval('(' + data + ')');
+      			var sn = data.sn;
+      			var pagePay = "toPay";
+      			window.location.href="http://localhost:8080/Tomorrow/alipay?pageStatus="+pagePay+"&sn="+sn;
+      		},
+      		error:function(errorMsg){
+      			alert("无法删除,请联系管理员");
+      		}
+      		
+      	});
+      }
+</script>
+</body>
+</html>

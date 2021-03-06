@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>添加</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../layuimini-2/layuimini-2/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../layuimini-2/layuimini-2/css/public.css" media="all">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<h2 style="text-align:center">添加支付记录</h2><br>
+<div class="layui-progress">
+  <div class="layui-progress-bar" lay-percent="100%"></div>
+</div><br><br>
+<form   method="post" id="pay-log-add-form">
+	<div class="layui-form layuimini-form">
+		<div class="layui-form-item">
+		    <label class="layui-form-label">用户id</label>
+		    <div class="layui-input-block">
+		      <input type="number" name="userId"   lay-verify="required" placeholder="填写支付记录的用户" autocomplete="true" class="layui-input">
+		    </div>
+		</div>
+	    <div class="layui-form-item">
+		    <label class="layui-form-label">支付方式</label>
+		    <div class="layui-input-block">
+		      <select name="payment" lay-verify="required">
+		        <option value="0">支付宝</option>
+		      </select>
+		    </div>
+  		</div>	
+		<div class="layui-form-item">
+		    <label class="layui-form-label">订单标题</label>
+		    <div class="layui-input-block">
+		      <input type="text" name="title"   lay-verify="required" placeholder="请输入订单名称" autocomplete="true" class="layui-input">
+		    </div>
+		</div>
+		<div class="layui-form-item">
+		    <label class="layui-form-label">支付金额</label>
+		    <div class="layui-input-block">
+		      <input type="number" name="totalAmount"   lay-verify="required" placeholder="请填写支付金额" autocomplete="off" class="layui-input">
+		    </div>
+		</div>
+		<div class="layui-form-item layui-form-text required" >
+		    <label class="layui-form-label">订单详细</label>
+		    <div class="layui-input-block">
+		      <textarea name="info" placeholder="订单详细描述备注"  class="layui-textarea"></textarea>
+		    </div>
+		</div>
+	    <div class="layui-form-item">
+	        <div class="layui-input-block">
+	        	<!-- <input  type="submit" class="layui-btn" lay-submit lay-filter="saveBtn" style="margin-left: 100px" value="提交"> -->
+	           <button class="layui-btn" lay-submit lay-filter="saveBtn" id="add-form-submit-btn">确认</button>
+	            <button class="layui-btn layui-btn-danger" onclick="javascript:history.back(-1):return false:">返回</button>
+	        </div>
+	    </div>
+	</div>
+</form>
+<script src="../layuimini-2/layuimini-2/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../layuimini-2/layuimini-2/lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+<script>
+//注意进度条依赖 element 模块，否则无法进行正常渲染和功能性操作
+layui.use('element', function(){
+  var element = layui.element;
+});
+</script>
+<script>  
+            $(document).ready(function(){
+            	$("#add-form-submit-btn").click(function(){
+            		
+            		var userId = $('input[name="userId"]').val();
+            		var title = $('input[name="title"]').val();
+                	var totalAmount = $('input[name="totalAmount"]').val();
+                	var info = $('textarea[name="info"]').val();
+                	var pageStatus = "add";
+                	if(userId ==''){
+                		alert("用户不能为空");
+                		return;
+                	} if(title ==''){
+                		alert("标题不能为空");
+                		return;
+                	} if(totalAmount ==''){
+                		alert("金额不能为空");
+						return;                		
+                	}
+                	var data = {
+                			"userId":userId,
+        					"title":title,
+        					"totalAmount":totalAmount,
+        					"info":info,
+
+                	};
+                	
+            		$.ajax({
+            			url:'http://localhost:8080/Tomorrow/pay?pageStatus='+pageStatus,
+            			type:'post',
+            			async : true, 
+            			data:data,
+            			dataType:'json',
+            			success:function(res){
+            				alert("支付记录添加成功");
+            						window.location.href='PayLog.html';
+            					layer.msg("支付记录添加成功",function(){
+            						layer.close();
+            					})
+            				},
+            			error:function(res){
+            				
+            				window.location.href='PayLog.html';
+            			}
+            		});//ajax
+            	});
+            });
+
+        //监听提交
+        
+
+    
+</script>
+</body>
+</html>

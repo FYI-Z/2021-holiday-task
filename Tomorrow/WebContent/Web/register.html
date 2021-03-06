@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>注册</title>
+  <link rel="stylesheet" type="text/css" href="res/static/css/main.css">
+  <link rel="stylesheet" type="text/css" href="res/layui/css/layui.css">
+  <script type="text/javascript" src="res/layui/layui.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+</head>
+<body>
+
+  <div class="site-nav-bg">
+    <div class="site-nav w1200">
+      <p class="sn-back-home">
+        <i class="layui-icon layui-icon-home"></i>
+        <a href="#">首页</a>
+      </p>
+      <div class="sn-quick-menu">
+        <div class="login"><a href="login.html">登录</a></div>
+        <div class="sp-cart"><a href="shopcart.html">购物车</a><span>2</span></div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="header">
+    <div class="headerLayout w1200">
+      <div class="headerCon">
+        <h1 class="mallLogo">
+          <a href="#" title="母婴商城">
+            <img src="res/static/img/logo.png">
+          </a>
+        </h1>
+        <div class="mallSearch">
+          <form action="" class="layui-form" novalidate>
+            <input type="text" name="title" required  lay-verify="required" autocomplete="off" class="layui-input" placeholder="请输入需要的商品">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">
+                <i class="layui-icon layui-icon-search"></i>
+            </button>
+            <input type="hidden" name="" value="">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="content content-nav-base  login-content">
+    <div class="main-nav">
+      <div class="inner-cont0">
+        <div class="inner-cont1 w1200">
+          <div class="inner-cont2">
+            <a href="commodity.html" class="active">所有商品</a>
+            <a href="buytoday.html">今日团购</a>
+            <a href="information.html">母婴资讯</a>
+            <a href="about.html">关于我们</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="login-bg">
+      <div class="login-cont w1200">
+        <div class="form-box" style="margin-right:25%;height: 550px">
+          <form class="layui-form" action="">
+            <legend style="height:00px;">注册</legend>
+            <div class="layui-form-item">
+              <div class="layui-inline iphone">
+                <div class="layui-input-inline">
+                  <i class="layui-icon layui-icon-username" style="font-size: 32px; color: &#xe66f;;position: absolute"></i>
+                  <input type="text" name="userid" id="userid" lay-verify="required" placeholder="请输入账号" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+              
+               <div class="layui-inline iphone">
+                <div class="layui-input-inline">
+					<i class="layui-icon layui-icon-face-smile" style="font-size: 32px; color: &#xe66f;;position: absolute"></i>
+                  <input id="nickname" type="text" name="nickname" lay-verify="required" placeholder="请输入昵称" autocomplete="off" class="layui-input">
+                  
+                </div>
+              </div>
+              
+              
+              <div class="layui-inline iphone">
+                <div class="layui-input-inline">
+					<i class="layui-icon layui-icon-password" style="font-size: 32px; color: &#xe66f;;position: absolute"></i>
+                  <input id="password" type="text" name="password" lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                  
+                </div>
+              </div>
+              
+				<div class="layui-inline iphone">
+                <div class="layui-input-inline">
+					<i class="layui-icon layui-icon-password" style="font-size: 32px; color: &#xe66f;;position: absolute"></i>
+                  <input id="password2" type="text" name="password2" lay-verify="required" placeholder="请再次输入密码" autocomplete="off" class="layui-input">
+                  
+                </div>
+              </div>
+				<div class="layui-inline iphone">
+                <div class="layui-input-inline">
+					<i class="layui-icon layui-icon-cellphone" style="font-size: 32px; color: &#xe66f;;position: absolute"></i>
+                  <input id="phone" type="text" name="phone" lay-verify="required|phone" placeholder="请输入联系电话" autocomplete="off" class="layui-input">
+                  
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item login-btn">
+              <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="demo1" id="register" >注册</button>
+				 
+              </div>
+				<div class="layui-input-block">
+                
+				<button class="layui-btn" id="tologin" >已有账号？点击登录</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="ng-promise-box">
+      <div class="ng-promise w1200">
+        <p class="text">
+          <a class="icon1" href="javascript:;">7天无理由退换货</a>
+          <a class="icon2" href="javascript:;">满99元全场免邮</a>
+          <a class="icon3" style="margin-right: 0" href="javascript:;">100%品质保证</a>
+        </p>
+      </div>
+    </div>
+    <div class="mod_help w1200">                                     
+      <p>
+        <a href="javascript:;">关于我们</a>
+        <span>|</span>
+        <a href="javascript:;">帮助中心</a>
+        <span>|</span>
+        <a href="javascript:;">售后服务</a>
+        <span>|</span>
+        <a href="javascript:;">母婴资讯</a>
+        <span>|</span>
+        <a href="javascript:;">关于货源</a>
+      </p>
+      <p class="coty">母婴商城版权所有 &copy; 2012-2020</p>
+    </div>
+  </div>
+  <script type="text/javascript">
+   layui.config({
+      base: 'res/static/js/util' //你存放新模块的目录，注意，不是layui的模块目录
+    }).use(['jquery','form'],function(){
+          var $ = layui.$;
+          
+          
+          $(document).on('click','#tologin',function(data){
+        	  
+        	  window.location = "login.html";
+        	  return false;
+          })
+		
+       	$(document).on('click','#register',function(data){
+       		
+       		var username = $("#userid").val();
+
+       		var password = $("#password").val();
+       		var password2 = $("#password2").val();
+       		var phone = $("#phone").val();
+       		var nickname = $("#nickname").val();
+       		if(password!=password2){
+       			layer.msg("两次填入的密码不正确");
+       			return false;
+       		}
+       		$.ajax({
+    			type : "post",
+    		    async : true,           
+    		    url : "http://localhost:8080/Tomorrow/usercontroller", 
+    		    data : {
+    		    	"userid":username,
+    		    	"password":password,
+    		    	"phone":phone,
+    		    	"nickname":nickname,
+    		    	"age":0,
+    		    	"flag":"register"
+    		    },
+    		    dataType : "json",        //返回数据形式为json
+    		    success : function(result) {
+    		    	console.log(result);
+    		    	if(result.data.status!="增加成功")
+    		    	{
+    		    		layer.msg("有人使用了该用户名，请重新填写");
+    		    		return false;
+    		    	}
+    		    	else {
+    		    		layer.alert("注册成功");
+    		    		
+    		    		window.location = "login.html";
+    		    		
+    		    		return false;
+					}
+    		    },
+    		    error : function(errorMsg) {
+    		    	layer.msg("注册失败");
+    		    }
+    		})
+            return false;
+     
+       	})
+
+        $("#find").click(function() {
+            if(!/^1\d{10}$/.test($("#phone").val())){
+              layer.msg("请输入正确的手机号");
+              return false;
+            }
+            var obj=this;
+            $.ajax({
+                type:"get",
+                url:"../json/login.json",
+                dataType:"json",//返回的
+                success:function(data) {
+                    
+                    if(data.result){
+                        $("#find").addClass(" layui-btn-disabled");
+                        $('#find').attr('disabled',"true");
+                        settime(obj);
+                        $("#msg").text(data.msg);
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                },
+                error:function(msg) {
+                    console.log(msg);
+                }
+            }); 
+        })
+        var countdown=60; 
+        function settime(obj) { 
+        if (countdown == 0) { 
+            obj.removeAttribute("disabled"); 
+            obj.classList.remove("layui-btn-disabled")
+            obj.value="获取验证码"; 
+            countdown = 60; 
+            return;
+        } else { 
+            
+            obj.value="重新发送(" + countdown + ")"; 
+            countdown--; 
+        } 
+        setTimeout(function() { 
+            settime(obj) }
+            ,1000) 
+        }
+    })
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>评论</title>
+		<link rel="stylesheet" href="layui/css/layui.css"  media="all">
+	</head>
+	<body>
+			
+			<div id="addcontent" style="margin: 8%; display:none;">
+				<form class="layui-form layui-form-pane" method="post" id="add">
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<textarea type="text" id="content" name="content" required lay-verify="required" placeholder="请输入评论内容" autocomplete="off" class="layui-input" style="width: 250px; height: 100px;"></textarea>
+						</div>
+					</div>
+					
+				</form>
+			</div>
+			<div class="layui-btn-container">
+			  
+			  <button type="submit" class="layui-btn" lay-submit="" lay-filter="comment">评论</button>
+			</div>
+		<script src="layui/layui.js" charset="utf-8"></script>
+		<script src="jquery-3.5.1.js" charset="utf-8"></script>
+		<script>
+		//Demo
+		layui.use('form', function(){
+		  var form = layui.form;
+		   form.on('submit(comment)', function(data){
+			 layer.open({
+				 type: 1,
+				 title: false,
+				 area:['520px', '200px'],
+				 btn: ['提交', '取消'],
+				 content:$('#addcontent'),
+				 btnAlign: 'c',
+				 yes:function(index, layero){
+					 if(layero.find("#content").val()!= ""){
+						 $.getJSON('comments',{
+							 goodsid: "0",		//获取该商品id
+							 userid: "000006",	//获取该用户id	
+							 comments:layero.find("#content").val(),
+							 method: 'add'
+						 },function(res){
+							 layer.msg(res.data); 
+							 layer.close(index);
+						 })
+						 
+					 }
+					 else{
+						 layer.msg("评论内容不能为空！！！"); 
+					 }
+				 },
+				 end:function(index, layero){
+				 	$("#add")[0].reset();
+				 	return false;
+				 }
+			 })
+			 
+			 
+			  })
+		});
+		
+		</script>
+	</body>
+</html>

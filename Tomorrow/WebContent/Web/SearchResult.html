@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>搜索结果</title>
+<link rel="stylesheet" type="text/css" href="res/static/css/main.css">
+  <link rel="stylesheet" type="text/css" href="res/layui/css/layui.css">
+  <script type="text/javascript" src="res/layui/layui.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+</head>
+<body>
+	<div class="site-nav-bg">
+    <div class="site-nav w1200">
+      <p class="sn-back-home">
+        <i class="layui-icon layui-icon-home"></i>
+        <a href="#">首页</a>
+      </p>
+      <div class="sn-quick-menu">
+        <div class="login"><a href="userinfo.html" id="myself"></a></div>
+        <div class="sp-cart"><a href="shopcart.html">购物车</a><span>2</span></div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="header">
+    <div class="headerLayout w1200">
+      <div class="headerCon">
+        <h1 class="mallLogo">
+          <a href="#" title="臭皮匠商城">
+            <img src="res/static/img/logo.png">
+          </a>
+        </h1>
+        <div class="mallSearch">
+          <form action="" class="layui-form" novalidate>
+            <input type="text" name="title" required  lay-verify="required" autocomplete="off" class="layui-input" placeholder="请输入需要的商品">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">
+                <i class="layui-icon layui-icon-search"></i>
+            </button>
+            <input type="hidden" name="" value="">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+	
+	<p id="goodscontrol">
+	
+		
+	</p>
+	
+	
+	
+	
+<script src="res/layuimini/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="res/layuimini/lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>	
+<script type="text/javascript">
+
+	var getCookie = function (name) {
+	  var arr;
+	  var reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+	  if (arr = document.cookie.match(reg)){
+	    return arr[2];
+	  }
+	  else
+	    return null;
+	};
+
+	var setCookie = function (name, value) {
+		  
+		  var expires = 15 * 60 * 1000;
+		  var exp = new Date();
+		  exp.setTime(exp.getTime() + expires);
+		  document.cookie = name + "=" + value + ";expires=" + exp.toUTCString();
+		};
+
+
+	window.onload=function(){
+		var str="";
+		var name = getCookie("goodsname");
+		var type = getCookie("goodstype");
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		 $.ajax({
+ 			type : "post",
+ 		    async : true,            
+ 		    url : "http://localhost:8080/Tomorrow/goodscontroller",    
+ 		    data : {
+ 		    	"name":name,
+ 		    	"type":type,
+ 		    	"flag":"searchGoods"
+ 		    },
+ 		    dataType : "json",        
+ 		    success : function(result) {
+ 		    	console.log(result);
+ 		    	for ( var item in result.data) {
+					//console.log(result.data[item].name);
+ 		    		str+='<div style="width: 200px;height: 300px;margin: 30px;border: 1px solid;float:left;" id="goods">';
+ 		    		str+='<img alt="" src="" width="200px" height="250px">';
+ 		    		str+='<p>'+result.data[item].name+'</p>';
+ 		    		str+='<p>商品价格'+result.data[item].price+'</p>';
+ 		    		str+='</div>';
+ 		    		document.getElementById("goodscontrol").innerHTML=str;
+				}
+ 		    },
+ 		    error : function(errorMsg) {
+ 		      
+ 		    }
+ 		})	
+		//document.getElementById("").value=getCookie("");
+		
+	}
+</script>
+</body>
+</html>
